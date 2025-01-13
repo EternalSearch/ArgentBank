@@ -15,11 +15,8 @@
     flex-direction: row;
   }
 
-  .account-content-wrapper.cta {
-    flex: 0;
-  }
-
   .transaction-button {
+    height: 40px;
     width: 200px;
   }
 }
