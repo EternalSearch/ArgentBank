@@ -18,10 +18,8 @@ export const logout = () => ({
 });
 
 
-export const loginUser = (email, password, rememberMe, navigate, ) => async (dispatch) => {
+export const loginUser = (email, password, rememberMe) => async (dispatch) => {
   try {
-    console.log("Tentative de connexion avec :", { email, password, rememberMe });
-
     const response = await fetch("http://localhost:3001/api/v1/user/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -29,15 +27,13 @@ export const loginUser = (email, password, rememberMe, navigate, ) => async (dis
     });
 
     const data = await response.json();
-    console.log("Données JSON : ", data);
-
+    
     if (response.ok) {
-      dispatch(loginSuccess(data.body.token));
+      dispatch(loginSuccess(data.body));
+      
       const storage = rememberMe ? localStorage : sessionStorage;
       storage.setItem("token", data.body.token); 
      
-      navigate("/user");
-
     } else {;
       dispatch(loginFailure());
       alert("Erreur dans l'identifiant ou le mot de passe");

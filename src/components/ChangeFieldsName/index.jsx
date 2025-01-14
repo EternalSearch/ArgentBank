@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getUserProfile,
+  // getUserProfile,
   updateUserName,
 } from "../../Redux/Actions/update_name";
 import Button from "../Button";
@@ -14,16 +14,12 @@ const ChangeFieldsName = () => {
 
   // Récupération des données depuis le Redux Store
   const token = useSelector((state) => state.auth.token);
-  const userProfile = useSelector((state) => state.user?.userProfile);// Récupére le profil utilisateur
+  
+  const userProfile = useSelector((state) => state.user?.userProfile); // Récupére le profil utilisateur
 
   // États locaux pour l'édition
   const [isEditing, setIsEditing] = useState(false);
   const [userName, setUserName] = useState("");
-
-  // Charger le profil utilisateur à l'arrivée sur la page
-  useEffect(() => {
-    dispatch(getUserProfile());
-  }, [dispatch]);
 
   // Mise à jour de l'état local lors du chargement du profil utilisateur
   useEffect(() => {
@@ -48,7 +44,13 @@ const ChangeFieldsName = () => {
       console.error("Token non trouvé, utilisateur non authentifié");
       return;
     }
-    dispatch(updateUserName(userName, token)); // Mise à jour de l'utilisateur
+    // Vérification si le nom n'a pas changé
+    if (userName === userProfile?.userName) {
+      alert("Le nom d'utilisateur est identique. Veuillez entrer un nom différent.");
+      return;
+    }
+    dispatch(updateUserName(userName, token.token)); // Mise à jour de l'utilisateur
+    
     setIsEditing(false);
   };
 
@@ -58,9 +60,7 @@ const ChangeFieldsName = () => {
       <h2>
         Welcome back
         <br />
-        {userProfile
-          ? `${userProfile.firstName} ${userProfile.lastName}`
-          : ""}
+        {userProfile ? `${userProfile.firstName} ${userProfile.lastName}` : ""}
       </h2>
 
       {isEditing ? (
@@ -91,18 +91,22 @@ const ChangeFieldsName = () => {
               value={userProfile?.lastName}
               disabled
             />
-                <div className="form-buttons">
-            <Button className="edit-button"className2="form-buttons" text="Save" type="submit" />
-            <Button
-              className="edit-button"
-              className2="form-buttons"
-              text="Cancel"
-              type="button"
-              onClick={handleCancel}
-            />
-          </div>
+            <div className="form-buttons">
+              <Button
+                className="edit-button"
+                className2="form-buttons"
+                text="Save"
+                type="submit"
+              />
+              <Button
+                className="edit-button"
+                className2="form-buttons"
+                text="Cancel"
+                type="button"
+                onClick={handleCancel}
+              />
+            </div>
           </section>
-      
         </form>
       ) : (
         <Button
